@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 私密安全报告
+    url: https://github.com/wuzhuoye666/speech-desk/security/advisories/new
+    about: 报告漏洞、利用细节或可能包含敏感信息的问题

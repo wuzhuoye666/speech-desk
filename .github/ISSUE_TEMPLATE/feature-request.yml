@@ -1,0 +1,31 @@
+name: Feature request
+description: 描述真实演讲场景中的能力缺口
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: scenario
+    attributes:
+      label: 用户场景
+      description: 谁在什么演讲环境中遇到了什么问题？
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: 当前做法
+      description: 现在如何完成任务，最痛的步骤是什么？
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: 期望结果
+      description: 描述可观察的结果，而不是只写具体实现
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 补充证据
+      description: 可提供脱敏截图、工作流或相关产品链接
