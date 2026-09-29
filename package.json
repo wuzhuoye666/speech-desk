@@ -65,7 +65,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "electron": "^37.0.0",
     "electron-builder": "^26.0.12",
-    "electron-vite": "^4.0.0",
+    "electron-vite": "^5.0.0",
     "jsdom": "^26.0.0",
     "typescript": "^5.7.2",
     "vite": "^7.0.0",
