@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { EyeOff, Lock, ShieldCheck, X } from 'lucide-react'
 import type { PrompterState } from '../../../shared/types'
 import { RichTextEditor } from './RichTextEditor'
+import { MermaidDiagram } from './MermaidDiagram'
+import { foldedText } from '../../../shared/graph'
 
 export function PrompterView(): React.JSX.Element {
   const [state, setState] = useState<PrompterState | null>(null)
@@ -32,7 +34,7 @@ export function PrompterView(): React.JSX.Element {
 
   useEffect(() => {
     if (!contentRef.current) return
-    const richContent = contentRef.current.querySelector<HTMLElement>('.rich-content')
+    const richContent = contentRef.current.querySelector<HTMLElement>('.rich-content, .mermaid-preview')
     if (!richContent) return
     const resize = (): void => {
       const contentHeight = Math.ceil(richContent.getBoundingClientRect().height)
@@ -56,7 +58,7 @@ export function PrompterView(): React.JSX.Element {
       </div>
     </header>
     <div className="prompter-content" ref={contentRef}>
-      <RichTextEditor content={state.content} projectId={state.projectId} editable={false} compact />
+      {state.kind === 'graph' ? <MermaidDiagram source={foldedText(state.content)} /> : <RichTextEditor content={state.content} projectId={state.projectId} editable={false} compact />}
     </div>
     {state.atEnd && <div className="end-marker"><EyeOff />已到最后一块</div>}
   </div>

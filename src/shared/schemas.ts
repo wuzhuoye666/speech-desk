@@ -9,6 +9,8 @@ export const speechNodeSchema = z.object({
   id,
   presentationId: id,
   title: z.string().max(200),
+  kind: z.enum(['regular', 'folded', 'graph']).optional(),
+  splitRule: z.enum(['period', 'newline']).optional(),
   content: jsonContentSchema,
   position: z.object({ x: z.number().finite(), y: z.number().finite() }),
   size: z.object({ width: z.number().min(280).max(2400), height: z.number().min(180).max(4000) }),

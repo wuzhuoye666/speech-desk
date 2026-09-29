@@ -64,6 +64,13 @@ export class SpeechDatabase {
       CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value_json TEXT NOT NULL);
       INSERT OR IGNORE INTO schema_migrations(version) VALUES (1);
     `)
+    const columns = this.db.pragma('table_info(speech_nodes)') as { name: string }[]
+    if (!columns.some((column) => column.name === 'kind')) {
+      this.db.exec("ALTER TABLE speech_nodes ADD COLUMN kind TEXT NOT NULL DEFAULT 'regular'")
+    }
+    if (!columns.some((column) => column.name === 'split_rule')) {
+      this.db.exec("ALTER TABLE speech_nodes ADD COLUMN split_rule TEXT NOT NULL DEFAULT 'period'")
+    }
   }
 
   listProjects(trashed = false): ProjectSummary[] {
@@ -127,11 +134,13 @@ export class SpeechDatabase {
       this.db.prepare('DELETE FROM speech_edges WHERE presentation_id = ?').run(presentation.id)
       this.db.prepare('DELETE FROM speech_nodes WHERE presentation_id = ?').run(presentation.id)
       const insertNode = this.db.prepare(`
-        INSERT INTO speech_nodes(id,presentation_id,title,content_json,position_json,size_json,created_at,updated_at)
-        VALUES (@id,@presentationId,@title,@content,@position,@size,@createdAt,@updatedAt)
+        INSERT INTO speech_nodes(id,presentation_id,title,kind,split_rule,content_json,position_json,size_json,created_at,updated_at)
+        VALUES (@id,@presentationId,@title,@kind,@splitRule,@content,@position,@size,@createdAt,@updatedAt)
       `)
       for (const node of bundle.nodes) insertNode.run({
         ...node,
+        kind: node.kind ?? 'regular',
+        splitRule: node.splitRule ?? 'period',
         presentationId: presentation.id,
         content: JSON.stringify(node.content),
         position: JSON.stringify(node.position),
@@ -277,6 +286,8 @@ export class SpeechDatabase {
 
   private rowToNode = (row: Row): ProjectBundle['nodes'][number] => ({
     id: String(row.id), presentationId: String(row.presentation_id), title: String(row.title),
+    kind: row.kind === 'folded' || row.kind === 'graph' ? row.kind : 'regular',
+    splitRule: row.split_rule === 'newline' ? 'newline' : 'period',
     content: JSON.parse(String(row.content_json)), position: JSON.parse(String(row.position_json)),
     size: JSON.parse(String(row.size_json)), createdAt: String(row.created_at), updatedAt: String(row.updated_at)
   })

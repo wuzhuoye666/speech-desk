@@ -1,6 +1,6 @@
 {
   "name": "speech-desk",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "private": true,
   "description": "节点式演讲讲稿与悬浮提词器",
   "keywords": [
@@ -51,6 +51,7 @@
     "lowlight": "^3.3.0",
     "lucide-react": "^0.468.0",
     "marked": "^16.0.0",
+    "mermaid": "^11.17.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "zod": "^4.0.0",

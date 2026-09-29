@@ -1,4 +1,18 @@
-import type { SpeechEdge, SpeechNode } from './types'
+import type { FoldSplitRule, SpeechEdge, SpeechNode } from './types'
+import type { JSONContent } from '@tiptap/core'
+
+export function splitSentences(text: string, rule: FoldSplitRule = 'period'): string[] {
+  if (rule === 'newline') return text.split(/\r\n|\r|\n/).map((part) => part.trim()).filter(Boolean)
+  return (text.match(/[^。.]+[。.]*|[。.]+/g) ?? []).map((part) => part.trim()).filter(Boolean)
+}
+
+export function sentenceContent(sentences: string[]): JSONContent {
+  return { type: 'doc', content: sentences.map((sentence) => ({ type: 'paragraph', content: [{ type: 'text', text: sentence }] })) }
+}
+
+export function foldedText(content: JSONContent): string {
+  return (content.content ?? []).map((part) => (part.content ?? []).map((item) => item.text ?? '').join('')).join('\n')
+}
 
 export type ConnectionError = 'self' | 'duplicate' | 'source-used' | 'target-used' | 'cycle' | 'missing-node'
 
@@ -38,7 +52,10 @@ export function buildPlaybackChain(nodes: SpeechNode[], edges: SpeechEdge[], sta
   while (cursor && !visited.has(cursor)) {
     const node = nodeById.get(cursor)
     if (!node) break
-    chain.push(node)
+    if (node.kind === 'folded') {
+      const sentences = splitSentences(foldedText(node.content), node.splitRule ?? 'period')
+      sentences.forEach((sentence, index) => chain.push({ ...node, id: `${node.id}:sentence:${index}`, title: `${node.title} · ${index + 1}/${sentences.length}`, content: sentenceContent([sentence]) }))
+    } else chain.push(node)
     visited.add(cursor)
     cursor = nextById.get(cursor)
   }

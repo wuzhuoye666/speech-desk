@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildPlaybackChain, validateConnection } from './graph'
+import { buildPlaybackChain, sentenceContent, splitSentences, validateConnection } from './graph'
 import type { SpeechEdge, SpeechNode } from './types'
 
 const node = (id: string): SpeechNode => ({
@@ -18,6 +18,20 @@ describe('validateConnection', () => {
 })
 
 describe('buildPlaybackChain', () => {
+  it('plays every sentence in a folded node before its next node', () => {
+    const folded = { ...node('a'), kind: 'folded' as const, content: sentenceContent(['第一句。第二句。']) }
+    const chain = buildPlaybackChain([folded, node('b')], [edge('a', 'b')], 'a')
+    expect(chain.map((item) => item.id)).toEqual(['a:sentence:0', 'a:sentence:1', 'b'])
+    expect(chain[0].content.content?.[0].content?.[0].text).toBe('第一句。')
+  })
+  it('splits on periods without dropping text', () => {
+    expect(splitSentences('你好。 再见！ Hello.')).toEqual(['你好。', '再见！ Hello.'])
+  })
+  it('uses line breaks when selected and keeps punctuation', () => {
+    expect(splitSentences('第一句。第二句。\r\n第三句。\n\n第四句！', 'newline')).toEqual(['第一句。第二句。', '第三句。', '第四句！'])
+    const folded = { ...node('a'), kind: 'folded' as const, splitRule: 'newline' as const, content: sentenceContent(['第一句。第二句。\n第三句。']) }
+    expect(buildPlaybackChain([folded], [], 'a').map((part) => part.content.content?.[0].content?.[0].text)).toEqual(['第一句。第二句。', '第三句。'])
+  })
   it('follows only the reachable linear path', () => {
     const nodes = [node('a'), node('b'), node('c'), node('unused')]
     expect(buildPlaybackChain(nodes, [edge('a', 'b'), edge('b', 'c')], 'a').map((item) => item.id)).toEqual(['a', 'b', 'c'])

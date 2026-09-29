@@ -124,6 +124,7 @@ function currentPrompterState(): PrompterState | null {
     currentNodeId: node.id,
     title: node.title,
     content: node.content,
+    kind: node.kind ?? 'regular',
     position: playback.index + 1,
     total: playback.chain.length,
     atEnd: playback.index === playback.chain.length - 1,

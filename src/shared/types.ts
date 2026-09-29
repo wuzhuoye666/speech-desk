@@ -2,6 +2,7 @@ import type { JSONContent } from '@tiptap/core'
 
 export type ThemeMode = 'system' | 'light' | 'dark'
 export type SaveState = 'idle' | 'saving' | 'saved' | 'error'
+export type FoldSplitRule = 'period' | 'newline'
 
 export interface ViewportState { x: number; y: number; zoom: number }
 export interface NodePosition { x: number; y: number }
@@ -22,6 +23,8 @@ export interface SpeechNode {
   id: string
   presentationId: string
   title: string
+  kind?: 'regular' | 'folded' | 'graph'
+  splitRule?: FoldSplitRule
   content: JSONContent
   position: NodePosition
   size: NodeSize
@@ -78,6 +81,7 @@ export interface PrompterState {
   currentNodeId: string
   title: string
   content: JSONContent
+  kind?: 'regular' | 'folded' | 'graph'
   position: number
   total: number
   atEnd: boolean

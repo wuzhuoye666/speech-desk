@@ -4,7 +4,7 @@ import {
   applyEdgeChanges, applyNodeChanges, type Connection, type Edge, type EdgeChange, type Node, type NodeChange,
   type OnConnect, type ReactFlowInstance
 } from '@xyflow/react'
-import { ArrowLeft, CircleHelp, Download, Flag, Play, Plus, Settings, ShieldCheck } from 'lucide-react'
+import { ArrowLeft, Check, ChevronDown, CircleHelp, Download, FileText, Flag, Layers3, Play, Plus, Settings, ShieldCheck, Workflow } from 'lucide-react'
 import type { AppSettings, ProjectBundle, SaveState, SpeechEdge, SpeechNode } from '../../../shared/types'
 import { DEFAULT_CONTENT } from '../../../shared/types'
 import { connectionErrorMessage, validateConnection } from '../../../shared/graph'
@@ -29,8 +29,18 @@ function EditorCanvas({ initialProject, settings, onSettings, onClose }: Props):
   const [saveState, setSaveState] = useState<SaveState>('saved')
   const [toast, setToast] = useState<string | null>(null)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [newNodeKind, setNewNodeKind] = useState<'regular' | 'folded' | 'graph'>('regular')
   const flowRef = useRef<ReactFlowInstance<Node<SpeechNodeData>, Edge> | null>(null)
+  const kindMenuRef = useRef<HTMLDetailsElement>(null)
   const initialized = useRef(false)
+
+  useEffect(() => {
+    const closeOnOutside = (event: PointerEvent): void => {
+      if (kindMenuRef.current && !kindMenuRef.current.contains(event.target as globalThis.Node)) kindMenuRef.current.open = false
+    }
+    document.addEventListener('pointerdown', closeOnOutside)
+    return () => document.removeEventListener('pointerdown', closeOnOutside)
+  }, [])
 
   const showToast = useCallback((message: string) => {
     setToast(message); window.setTimeout(() => setToast(null), 2600)
@@ -68,11 +78,14 @@ function EditorCanvas({ initialProject, settings, onSettings, onClose }: Props):
     dragHandle: '.drag-handle',
     data: {
       title: node.title,
+      kind: node.kind ?? 'regular',
+      splitRule: node.splitRule ?? 'period',
       content: node.content,
       projectId: project.presentation.id,
       isStart: project.presentation.startNodeId === node.id,
       onTitle: (id, title) => updateNode(id, { title }),
       onContent: (id, content) => updateNode(id, { content }),
+      onSplitRule: (id, splitRule) => updateNode(id, { splitRule }),
       onSetStart: (id) => setProject((current) => ({ ...current, presentation: { ...current.presentation, startNodeId: id } })),
       onPresent: startPresentation,
       onDelete: deleteNode
@@ -147,7 +160,10 @@ function EditorCanvas({ initialProject, settings, onSettings, onClose }: Props):
     const id = crypto.randomUUID()
     const center = position ?? flowRef.current?.screenToFlowPosition({ x: window.innerWidth / 2, y: window.innerHeight / 2 }) ?? { x: 120, y: 120 }
     const node: SpeechNode = {
-      id, presentationId: project.presentation.id, title: '新演讲块', content: structuredClone(DEFAULT_CONTENT),
+      id, presentationId: project.presentation.id, title: newNodeKind === 'graph' ? '新图形框' : newNodeKind === 'folded' ? '新折叠框' : '新演讲块',
+      kind: newNodeKind,
+      splitRule: 'period',
+      content: newNodeKind === 'regular' ? structuredClone(DEFAULT_CONTENT) : { type: 'doc', content: [{ type: 'paragraph', content: [{ type: 'text', text: newNodeKind === 'graph' ? 'graph TD\n  A[开始] --> B[结束]' : '' }] }] },
       position: center, size: { width: 440, height: 280 }, createdAt: now, updatedAt: now
     }
     setProject((current) => ({
@@ -155,7 +171,7 @@ function EditorCanvas({ initialProject, settings, onSettings, onClose }: Props):
       presentation: { ...current.presentation, startNodeId: current.presentation.startNodeId ?? id },
       nodes: [...current.nodes, node]
     }))
-  }, [project.presentation.id])
+  }, [project.presentation.id, newNodeKind])
 
   const onMoveEnd = useCallback((_event: MouseEvent | TouchEvent | null, viewport: { x: number; y: number; zoom: number }) => {
     setProject((current) => ({ ...current, presentation: { ...current.presentation, viewport } }))
@@ -203,7 +219,17 @@ function EditorCanvas({ initialProject, settings, onSettings, onClose }: Props):
         <MiniMap pannable zoomable nodeColor={(node) => node.data.isStart ? '#4d8064' : '#989895'} />
       </ReactFlow>
       <div className="canvas-actions">
-        <button className="primary-button" onClick={() => addNode()}><Plus />新建节点</button>
+        <details className="node-kind-picker" ref={kindMenuRef} onKeyDown={(event) => { if (event.key === 'Escape') { event.currentTarget.open = false; event.currentTarget.querySelector('summary')?.focus() } }}>
+          <summary aria-label="选择编辑框类型"><span className="kind-picker-icon">{newNodeKind === 'regular' ? <FileText /> : newNodeKind === 'folded' ? <Layers3 /> : <Workflow />}</span><span className="kind-picker-copy"><small>编辑框类型</small><strong>{newNodeKind === 'regular' ? '常规框' : newNodeKind === 'folded' ? '折叠框' : '图形框'}</strong></span><ChevronDown className="kind-chevron" /></summary>
+          <div className="kind-picker-options">
+            {([
+              { kind: 'regular', name: '常规框', hint: '自由编辑讲稿', icon: FileText },
+              { kind: 'folded', name: '折叠框', hint: '按规则拆分播放', icon: Layers3 },
+              { kind: 'graph', name: '图形框', hint: '渲染 Mermaid 图表', icon: Workflow }
+            ] as const).map(({ kind, name, hint, icon: Icon }) => <button key={kind} type="button" className={newNodeKind === kind ? 'active' : ''} onClick={() => { setNewNodeKind(kind); if (kindMenuRef.current) kindMenuRef.current.open = false }}><Icon /><span><strong>{name}</strong><small>{hint}</small></span>{newNodeKind === kind && <Check className="kind-check" />}</button>)}
+          </div>
+        </details>
+        <button className="primary-button" onClick={() => addNode()}><Plus />新建编辑框</button>
         {!project.presentation.startNodeId && <span className="canvas-warning"><Flag />请设置演讲起点</span>}
       </div>
       <div className="canvas-hint"><CircleHelp />双击空白处创建节点 · 拖动节点两侧圆点建立顺序</div>
