@@ -14,7 +14,7 @@ export async function exportProject(db: SpeechDatabase, id: string): Promise<str
   const result = await dialog.showSaveDialog({
     title: '导出演讲备份',
     defaultPath: `${safeName(project.presentation.title)}.speechdesk`,
-    filters: [{ name: '演讲台项目', extensions: ['speechdesk'] }]
+    filters: [{ name: 'Talk2 项目', extensions: ['speechdesk'] }]
   })
   if (result.canceled || !result.filePath) return null
   const zip = new AdmZip()
@@ -30,7 +30,7 @@ export async function exportProject(db: SpeechDatabase, id: string): Promise<str
 
 export async function importProject(db: SpeechDatabase): Promise<ProjectBundle | null> {
   const result = await dialog.showOpenDialog({
-    title: '导入演讲备份', properties: ['openFile'], filters: [{ name: '演讲台项目', extensions: ['speechdesk'] }]
+    title: '导入演讲备份', properties: ['openFile'], filters: [{ name: 'Talk2 项目', extensions: ['speechdesk'] }]
   })
   if (result.canceled || !result.filePaths[0]) return null
   const zip = new AdmZip(result.filePaths[0])

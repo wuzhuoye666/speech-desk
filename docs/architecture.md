@@ -1,6 +1,6 @@
-# 演讲台架构说明
+# Talk2 架构说明
 
-演讲台使用 Electron 的主进程、预加载层和 React 渲染进程分离桌面权限与界面代码。项目数据只由主进程访问，渲染进程通过窄 IPC 接口请求操作。
+Talk2 使用 Electron 的主进程、预加载层和 React 渲染进程分离桌面权限与界面代码。项目数据只由主进程访问，渲染进程通过窄 IPC 接口请求操作。
 
 ## 组件边界
 
@@ -100,6 +100,6 @@ Vitest 当前覆盖：
 
 ## 相关文档
 
-- [从源码运行演讲台](getting-started.md)
+- [从源码运行 Talk2](getting-started.md)
 - [使用指南](user-guide.md)
 - [配置参考](configuration.md)

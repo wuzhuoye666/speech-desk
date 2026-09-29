@@ -1,4 +1,4 @@
-# 演讲台（Speech Desk）
+# Talk2
 
 [![CI](https://github.com/wuzhuoye666/speech-desk/actions/workflows/ci.yml/badge.svg)](https://github.com/wuzhuoye666/speech-desk/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-386b52.svg)](LICENSE)
@@ -6,9 +6,9 @@
 
 一款本地优先的 Windows 节点式讲稿编辑器与悬浮提词器。你可以在无限画布上拆分讲稿，用连线确定唯一的讲述顺序，再把当前段落显示在其他应用之上的独立提词窗中。
 
-![演讲台节点编辑器](docs/assets/editor.png)
+![Talk2 节点编辑器](docs/assets/editor.png)
 
-## 为什么使用演讲台
+## 为什么使用 Talk2
 
 - **按思路组织，而不是按页组织**：每个节点是一段讲述内容，连线构成从起点开始的线性演讲路径。
 - **编辑与演讲共用同一份内容**：标题、列表、表格、代码、任务列表、图片和 KaTeX 公式会直接进入提词窗。
@@ -45,7 +45,7 @@ npm.cmd run check
 npm.cmd run dist:win
 ```
 
-`check` 会依次执行严格类型检查、28 项自动化测试和生产构建。Windows NSIS 安装包输出到 `release/`。
+`check` 会依次执行严格类型检查、自动化测试和生产构建。Windows NSIS 安装包输出到 `release/`。
 
 ## 功能概览
 
@@ -68,11 +68,11 @@ npm.cmd run dist:win
 | 显示或隐藏提词窗 | `Alt+Shift+P` |
 | 锁定或解锁鼠标穿透 | `Alt+Shift+L` |
 
-快捷键可以在设置中修改。若新组合已被其他应用占用，演讲台会恢复上一次有效配置。
+快捷键可以在设置中修改。若新组合已被其他应用占用，Talk2 会恢复上一次有效配置。
 
 ## 文档
 
-- [从源码运行演讲台](docs/getting-started.md)：从安装依赖到完成第一场节点演讲。
+- [从源码运行 Talk2](docs/getting-started.md)：从安装依赖到完成第一场节点演讲。
 - [使用指南](docs/user-guide.md)：编辑、连线、提词、备份和故障排查。
 - [配置参考](docs/configuration.md)：全部主题、提词窗和快捷键默认值与约束。
 - [架构说明](docs/architecture.md)：进程边界、IPC、SQLite、备份和演讲链设计。

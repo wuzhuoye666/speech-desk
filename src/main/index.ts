@@ -16,7 +16,10 @@ let prompterWindow: BrowserWindow | null = null
 let db: SpeechDatabase
 let playback: { project: ProjectBundle; chain: SpeechNode[]; index: number } | null = null
 
-if (process.env.SPEECH_DESK_QA_USER_DATA) app.setPath('userData', process.env.SPEECH_DESK_QA_USER_DATA)
+// Keep existing presentations when the visible product name changes to Talk2.
+const userDataPath = process.env.SPEECH_DESK_QA_USER_DATA ?? join(app.getPath('appData'), 'speech-desk')
+mkdirSync(userDataPath, { recursive: true })
+app.setPath('userData', userDataPath)
 
 const hasSingleInstanceLock = app.requestSingleInstanceLock()
 if (!hasSingleInstanceLock) app.quit()
@@ -41,7 +44,7 @@ protocol.registerSchemesAsPrivileged([{ scheme: 'speech-asset', privileges: { se
 function createMainWindow(query?: Record<string, string>): void {
   mainWindow = new BrowserWindow({
     width: 1360, height: 860, minWidth: 980, minHeight: 650, show: false,
-    title: '演讲台', backgroundColor: '#f6f6f4',
+    title: 'Talk2', backgroundColor: '#f6f6f4',
     webPreferences: { preload: join(__dirname, '../preload/index.js'), contextIsolation: true, nodeIntegration: false, sandbox: true }
   })
   const revealWindow = (): void => {

@@ -1,6 +1,6 @@
 # 配置参考
 
-演讲台把应用设置存入 SQLite `settings` 表的 `app` 键。缺失字段会与源码中的默认值合并。
+Talk2 把应用设置存入 SQLite `settings` 表的 `app` 键。缺失字段会与源码中的默认值合并。
 
 ## 应用主题
 
@@ -67,5 +67,5 @@
 
 ## 相关文档
 
-- [如何使用演讲台](user-guide.md)
+- [如何使用 Talk2](user-guide.md)
 - [架构说明](architecture.md)

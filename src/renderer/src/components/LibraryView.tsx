@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import talk2Icon from '../../../../assets/talk2-icon.png'
 import { ArchiveRestore, Copy, FileUp, MoreHorizontal, Plus, Search, Settings, Trash2 } from 'lucide-react'
 import type { AppSettings, ProjectBundle, ProjectSummary } from '../../../shared/types'
 import { SettingsModal } from './SettingsModal'
@@ -46,7 +47,7 @@ export function LibraryView({ settings, onSettings, onOpen }: Props): React.JSX.
 
   return <div className="app-shell library-shell">
     <aside className="sidebar">
-      <div className="brand"><span className="brand-mark">讲</span><span>演讲台</span></div>
+      <div className="brand"><img className="brand-mark" src={talk2Icon} alt="" /><span>Talk2</span></div>
       <nav>
         <button className={!trashed ? 'active' : ''} onClick={() => setTrashed(false)}>演讲资料库</button>
         <button className={trashed ? 'active' : ''} onClick={() => setTrashed(true)}><Trash2 />回收站</button>
@@ -66,7 +67,7 @@ export function LibraryView({ settings, onSettings, onOpen }: Props): React.JSX.
       <div className="search-box"><Search /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜索演讲…" /></div>
       {error && <div className="error-banner">{error}<button onClick={() => setError(null)}>关闭</button></div>}
       {loading ? <div className="empty-state">正在载入资料库…</div> : visible.length === 0 ? <div className="empty-state">
-        <div className="empty-icon">{trashed ? <Trash2 /> : <span>讲</span>}</div>
+        <div className="empty-icon">{trashed ? <Trash2 /> : <img src={talk2Icon} alt="" />}</div>
         <h2>{trashed ? '回收站是空的' : '从第一场演讲开始'}</h2>
         <p>{trashed ? '删除的演讲会暂时保留在这里。' : '创建节点、粘贴讲稿，然后用连线安排讲述顺序。'}</p>
         {!trashed && <button className="primary-button" onClick={() => void create()}><Plus />新建演讲</button>}

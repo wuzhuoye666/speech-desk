@@ -39,5 +39,5 @@ jobs:
           if ($env:GITHUB_REF_NAME -ne "v$version") {
             throw "Tag $env:GITHUB_REF_NAME does not match package version $version"
           }
-          $installer = "release/演讲台 Setup $version.exe"
-          gh release create $env:GITHUB_REF_NAME $installer "$installer.blockmap" --verify-tag --generate-notes --title "演讲台 $version"
+          $installer = "release/Talk2 Setup $version.exe"
+          gh release create $env:GITHUB_REF_NAME $installer "$installer.blockmap" --verify-tag --generate-notes --title "Talk2 $version"

@@ -63,7 +63,7 @@ svg.lucide { width: 17px; height: 17px; stroke-width: 1.8; }
 .library-shell { display: grid; grid-template-columns: 224px 1fr; }
 .sidebar { border-right: 1px solid var(--border); background: var(--panel); padding: 18px 12px; display: flex; flex-direction: column; }
 .brand { height: 44px; display: flex; align-items: center; gap: 10px; padding: 0 8px; font-size: 16px; font-weight: 650; }
-.brand-mark { display: grid; place-items: center; width: 28px; height: 28px; background: var(--text); color: var(--panel); border-radius: 7px; font-size: 13px; }
+.brand-mark { display: block; width: 30px; height: 30px; object-fit: contain; }
 .sidebar nav { margin-top: 22px; display: grid; gap: 4px; }
 .sidebar button { width: 100%; display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: 7px; background: transparent; color: var(--muted); text-align: left; }
 .sidebar button:hover, .sidebar button.active { background: var(--panel-muted); color: var(--text); }
@@ -94,6 +94,7 @@ svg.lucide { width: 17px; height: 17px; stroke-width: 1.8; }
 .empty-state h2 { color: var(--text); margin: 14px 0 4px; font-size: 18px; }
 .empty-state p { margin: 0 0 20px; }
 .empty-icon { width: 48px; height: 48px; display: grid; place-items: center; border: 1px solid var(--border); background: var(--panel-strong); border-radius: 12px; color: var(--muted); }
+.empty-icon img { width: 34px; height: 34px; object-fit: contain; }
 
 /* Editor canvas */
 .editor-shell { display: grid; grid-template-rows: 58px 1fr; }

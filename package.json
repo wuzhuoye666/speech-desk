@@ -1,8 +1,8 @@
 {
   "name": "speech-desk",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "private": true,
-  "description": "节点式演讲讲稿与悬浮提词器",
+  "description": "Talk2 节点式演讲讲稿与悬浮提词器",
   "keywords": [
     "electron",
     "teleprompter",
@@ -73,7 +73,7 @@
   },
   "build": {
     "appId": "cn.speechdesk.app",
-    "productName": "演讲台",
+    "productName": "Talk2",
     "asar": true,
     "asarUnpack": [
       "node_modules/better-sqlite3/**/*"
@@ -89,6 +89,7 @@
       "nsis": "1.2.1"
     },
     "win": {
+      "icon": "assets/talk2-icon.ico",
       "target": [
         {
           "target": "nsis",
@@ -99,6 +100,9 @@
       ]
     },
     "nsis": {
+      "shortcutName": "Talk2",
+      "installerIcon": "assets/talk2-icon.ico",
+      "uninstallerIcon": "assets/talk2-icon.ico",
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
